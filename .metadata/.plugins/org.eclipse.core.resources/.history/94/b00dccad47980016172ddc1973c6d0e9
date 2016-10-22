@@ -1,0 +1,29 @@
+
+public class Apriori {
+
+	public int minSup;
+	public int minConf;
+	public int hfRange;
+	public int maxLeafSize;
+	public String inputFile;
+	public String outputFile;
+	
+	public Apriori(){
+		System.out.println("name = " + name);
+	}
+	
+	public static void main(String[] args) {
+		int minsup, minconf, hfrange, maxleafsize;
+		String inputfile, outputfile;
+		
+		minsup = Integer.parseInt(args[0]);
+		minconf = Integer.parseInt(args[1]);
+		hfrange = Integer.parseInt(args[4]);
+		maxleafsize = Integer.parseInt(args[5]);
+		
+		inputfile = args[2];
+		outputfile = args[3];
+
+	}
+
+}
