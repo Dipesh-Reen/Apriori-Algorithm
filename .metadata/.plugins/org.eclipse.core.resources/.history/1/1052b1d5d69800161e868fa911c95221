@@ -13,21 +13,11 @@ public class Apriori {
 	private int maxLeafSize;
 	private String inputFile;
 	private String outputFile;
-	private int k;
 	
 	HashMap<String, Vector<Integer>> transactionTable = new HashMap<String, Vector<Integer>>();
-	HashMap<Vector<Integer>, Integer> itemsetSupportPairs = new HashMap<Vector<Integer>, Integer>();
-	HashMap<Integer, HashMap<Vector<Integer>, Integer>> frequentKItemset = new HashMap<Integer, HashMap<Vector<Integer>, Integer>>();
-	HashMap<Vector<Integer>, Integer> CandidateItemset = new HashMap<Vector<Integer>, Integer>();
+	HashMap<String, Integer> itemsetSupportPairs = new HashMap<String, Integer>();
+	HashMap<Integer, Vector<Integer>> frequentKItemset = new HashMap<Integer, Vector<Integer>>();
 	
-	public int getK() {
-		return k;
-	}
-
-	public void setK(int k) {
-		this.k = k;
-	}
-
 	public int getMinSup() {
 		return minSup;
 	}
@@ -36,7 +26,7 @@ public class Apriori {
 		this.minSup = minSup;
 		System.out.println(this.minSup);
 	}
-q
+
 	public int getMinConf() {
 		return minConf;
 	}
@@ -84,7 +74,6 @@ q
 		this.setOutputFile(args[3]);
 		this.setHfRange(Integer.parseInt(args[4]));
 		this.setMaxLeafSize(Integer.parseInt(args[5]));
-		this.setK(1);
 	}
 	
 	public void createTransactionTable(String[] transaction){
@@ -100,33 +89,15 @@ q
 	}
 	
 	public void createInitialItemset(String[] transaction){
-		Vector<Integer> item = new Vector<Integer>();
-		item.add(Integer.parseInt(transaction[1]));
-		int supCount = itemsetSupportPairs.containsKey(item) ? itemsetSupportPairs.get(item) : 0;
-		itemsetSupportPairs.put(item, supCount+1);
+		int supCount = itemsetSupportPairs.containsKey(transaction[1]) ? itemsetSupportPairs.get(transaction[1]) : 0;
+		itemsetSupportPairs.put(transaction[1], supCount+1);
 		System.out.println("Support :" + itemsetSupportPairs);
 	}
 	
 	public void generateInitialFrequentItemset(){
-		for ( Entry<Vector<Integer>, Integer> itemset : itemsetSupportPairs.entrySet()){
-			if (itemset.getValue() >= this.minSup){
-				if (frequentKItemset.containsKey(1)){
-					frequentKItemset.get(this.k).put(itemset.getKey(), itemset.getValue());
-				} 
-				else {
-					HashMap<Vector<Integer>, Integer> ISPair = new HashMap<Vector<Integer>, Integer>();
-					ISPair.put(itemset.getKey(), itemset.getValue());
-					frequentKItemset.put(this.k, ISPair);
-				}
-			}
-		}
-		System.out.println("Frequent 1 itemset : " + frequentKItemset);
-	}
-	
-	public void generateFrequentKItemsets(){
-		this.k++;
-		if(this.k-2 < 1){
-//			combineItemsets();
+		for ( Entry<String, Integer> itemset : itemsetSupportPairs.entrySet()){
+			System.out.println("Key : " + itemset.getKey());
+			System.out.println("Value : " + itemset.getValue());
 		}
 	}
 	
@@ -149,7 +120,6 @@ q
 		Apriori aprInst = new Apriori(args);
 		aprInst.readTransactionFile();
 		aprInst.generateInitialFrequentItemset();
-		aprInst.generateFrequentKItemsets();
 	}
 
 }

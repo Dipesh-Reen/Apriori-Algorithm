@@ -18,7 +18,6 @@ public class Apriori {
 	HashMap<String, Vector<Integer>> transactionTable = new HashMap<String, Vector<Integer>>();
 	HashMap<Vector<Integer>, Integer> itemsetSupportPairs = new HashMap<Vector<Integer>, Integer>();
 	HashMap<Integer, HashMap<Vector<Integer>, Integer>> frequentKItemset = new HashMap<Integer, HashMap<Vector<Integer>, Integer>>();
-	HashMap<Vector<Integer>, Integer> CandidateItemset = new HashMap<Vector<Integer>, Integer>();
 	
 	public int getK() {
 		return k;
@@ -36,7 +35,7 @@ public class Apriori {
 		this.minSup = minSup;
 		System.out.println(this.minSup);
 	}
-q
+
 	public int getMinConf() {
 		return minConf;
 	}
@@ -111,23 +110,15 @@ q
 		for ( Entry<Vector<Integer>, Integer> itemset : itemsetSupportPairs.entrySet()){
 			if (itemset.getValue() >= this.minSup){
 				if (frequentKItemset.containsKey(1)){
-					frequentKItemset.get(this.k).put(itemset.getKey(), itemset.getValue());
+					frequentKItemset.get(1).add(itemset);
 				} 
 				else {
-					HashMap<Vector<Integer>, Integer> ISPair = new HashMap<Vector<Integer>, Integer>();
-					ISPair.put(itemset.getKey(), itemset.getValue());
-					frequentKItemset.put(this.k, ISPair);
+					transactionTable.put(1, itemSet);
 				}
+				frequentKItemset.put(1, itemset.getKey());
 			}
 		}
 		System.out.println("Frequent 1 itemset : " + frequentKItemset);
-	}
-	
-	public void generateFrequentKItemsets(){
-		this.k++;
-		if(this.k-2 < 1){
-//			combineItemsets();
-		}
 	}
 	
 	public void readTransactionFile(){
@@ -149,7 +140,6 @@ q
 		Apriori aprInst = new Apriori(args);
 		aprInst.readTransactionFile();
 		aprInst.generateInitialFrequentItemset();
-		aprInst.generateFrequentKItemsets();
 	}
 
 }
