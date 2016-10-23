@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.Vector;
 
@@ -14,9 +13,8 @@ public class Apriori {
 	private String inputFile;
 	private String outputFile;
 	
-	HashMap<String, Vector<Integer>> transactionTable = new HashMap<String, Vector<Integer>>();
-	HashMap<String, Integer> itemsetSupportPairs = new HashMap<String, Integer>();
-	HashMap<Integer, Vector<Integer>> frequentKItemset = new HashMap<Integer, Vector<Integer>>();
+	HashMap<String, Vector<String>> transactionTable = new HashMap<String, Vector<String>>();
+	HashMap<String, Integer> itemsetSupportPair = new HashMap<String, Integer>();
 	
 	public int getMinSup() {
 		return minSup;
@@ -78,27 +76,20 @@ public class Apriori {
 	
 	public void createTransactionTable(String[] transaction){
 		if (transactionTable.containsKey(transaction[0])){
-			transactionTable.get(transaction[0]).add(Integer.parseInt(transaction[1]));
+			transactionTable.get(transaction[0]).add(transaction[1]);
 		} 
 		else {
-			Vector<Integer> itemSet = new Vector<Integer>();
-			itemSet.add(Integer.parseInt(transaction[1]));
+			Vector<String> itemSet = new Vector<String>();
+			itemSet.add(transaction[1]);
 			transactionTable.put(transaction[0], itemSet);
 		}
 		System.out.println("Here you go :" + transactionTable);
 	}
 	
 	public void createInitialItemset(String[] transaction){
-		int supCount = itemsetSupportPairs.containsKey(transaction[1]) ? itemsetSupportPairs.get(transaction[1]) : 0;
-		itemsetSupportPairs.put(transaction[1], supCount+1);
-		System.out.println("Support :" + itemsetSupportPairs);
-	}
-	
-	public void generateInitialFrequentItemset(){
-		for ( Entry<String, Integer> itemset : itemsetSupportPairs.entrySet()){
-			System.out.println("Key : " + itemset.getKey());
-			System.out.println("Value : " + itemset.getValue());
-		}
+		int supCount = itemsetSupportPair.containsKey(transaction[1]) ? itemsetSupportPair.get(transaction[1]) : 0;
+		itemsetSupportPair.put(transaction[1], supCount+1);
+		System.out.println("Support :" + itemsetSupportPair);
 	}
 	
 	public void readTransactionFile(){
@@ -109,6 +100,7 @@ public class Apriori {
 				String trans[] = readInput.nextLine().split("\\s+");
 				createTransactionTable(trans);
 				createInitialItemset(trans);
+//				TODO: Create a hash map for each transaction
 			}
 			readInput.close();
 		} catch (FileNotFoundException ex){
@@ -119,7 +111,6 @@ public class Apriori {
 	public static void main(String[] args) {
 		Apriori aprInst = new Apriori(args);
 		aprInst.readTransactionFile();
-		aprInst.generateInitialFrequentItemset();
 	}
 
 }
