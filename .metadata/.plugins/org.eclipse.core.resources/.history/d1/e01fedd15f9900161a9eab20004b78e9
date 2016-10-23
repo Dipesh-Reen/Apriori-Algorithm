@@ -1,0 +1,160 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Scanner;
+import java.util.Vector;
+
+public class Apriori {
+
+	private int minSup;
+	private int minConf;
+	private int hfRange;
+	private int maxLeafSize;
+	private String inputFile;
+	private String outputFile;
+	private int k;
+	
+	HashMap<String, Vector<Integer>> transactionTable = new HashMap<String, Vector<Integer>>();
+	HashMap<Vector<Integer>, Integer> itemsetSupportPairs = new HashMap<Vector<Integer>, Integer>();
+	HashMap<Integer, HashMap<Vector<Integer>, Integer>> frequentKItemset = new HashMap<Integer, HashMap<Vector<Integer>, Integer>>();
+	HashMap<Vector<Integer>, Integer> CandidateItemset = new HashMap<Vector<Integer>, Integer>();
+	
+	public int getK() {
+		return k;
+	}
+
+	public void setK(int k) {
+		this.k = k;
+	}
+
+	public int getMinSup() {
+		return minSup;
+	}
+
+	public void setMinSup(int minSup) {
+		this.minSup = minSup;
+		System.out.println(this.minSup);
+	}
+
+	public int getMinConf() {
+		return minConf;
+	}
+
+	public void setMinConf(int minConf) {
+		this.minConf = minConf;
+	}
+
+	public int getHfRange() {
+		return hfRange;
+	}
+
+	public void setHfRange(int hfRange) {
+		this.hfRange = hfRange;
+	}
+
+	public int getMaxLeafSize() {
+		return maxLeafSize;
+	}
+
+	public void setMaxLeafSize(int maxLeafSize) {
+		this.maxLeafSize = maxLeafSize;
+	}
+
+	public String getInputFile() {
+		return inputFile;
+	}
+
+	public void setInputFile(String inputFile) {
+		this.inputFile = inputFile;
+	}
+
+	public String getOutputFile() {
+		return outputFile;
+	}
+
+	public void setOutputFile(String outputFile) {
+		this.outputFile = outputFile;
+	}
+
+	public Apriori(String[] args){
+		this.setMinSup(Integer.parseInt(args[0]));
+		this.setMinConf(Integer.parseInt(args[1]));
+		this.setInputFile(args[2]);
+		this.setOutputFile(args[3]);
+		this.setHfRange(Integer.parseInt(args[4]));
+		this.setMaxLeafSize(Integer.parseInt(args[5]));
+		this.setK(1);
+	}
+	
+	public void createTransactionTable(String[] transaction){
+		if (transactionTable.containsKey(transaction[0])){
+			transactionTable.get(transaction[0]).add(Integer.parseInt(transaction[1]));
+		} 
+		else {
+			Vector<Integer> itemSet = new Vector<Integer>();
+			itemSet.add(Integer.parseInt(transaction[1]));
+			transactionTable.put(transaction[0], itemSet);
+		}
+		System.out.println("Here you go :" + transactionTable);
+	}
+	
+	public void createInitialItemset(String[] transaction){
+		Vector<Integer> item = new Vector<Integer>();
+		item.add(Integer.parseInt(transaction[1]));
+		int supCount = itemsetSupportPairs.containsKey(item) ? itemsetSupportPairs.get(item) : 0;
+		itemsetSupportPairs.put(item, supCount+1);
+		System.out.println("Support :" + itemsetSupportPairs);
+	}
+	
+	public void generateInitialFrequentItemset(){
+		for ( Entry<Vector<Integer>, Integer> itemset : itemsetSupportPairs.entrySet()){
+			if (itemset.getValue() >= this.minSup){
+				if (frequentKItemset.containsKey(1)){
+					frequentKItemset.get(this.k).put(itemset.getKey(), itemset.getValue());
+				} 
+				else {
+					HashMap<Vector<Integer>, Integer> ISPair = new HashMap<Vector<Integer>, Integer>();
+					ISPair.put(itemset.getKey(), itemset.getValue());
+					frequentKItemset.put(this.k, ISPair);
+				}
+			}
+		}
+		System.out.println("Frequent 1 itemset : " + frequentKItemset);
+	}
+	
+	public void generateFrequentKItemsets(){
+		this.k++;
+		if(this.k-2 < 1){
+			for ( Entry<Vector<Integer>, Integer> frequentItemset : frequentKItemset.get(1).entrySet()){
+				for (vector<Integer> itemset1 : frequentItemset.getKey()){
+					
+				}
+//			combineItemsets();
+			}
+		}
+	}
+	
+	public void readTransactionFile(){
+		try{
+			File file = new File(this.inputFile);
+			Scanner readInput = new Scanner(file);
+			while (readInput.hasNextLine()){
+				String trans[] = readInput.nextLine().split("\\s+");
+				createTransactionTable(trans);
+				createInitialItemset(trans);
+			}
+			readInput.close();
+		} catch (FileNotFoundException ex){
+			System.out.println("File not found");
+		}
+	}
+	
+	public static void main(String[] args) {
+		Apriori aprInst = new Apriori(args);
+		aprInst.readTransactionFile();
+		aprInst.generateInitialFrequentItemset();
+		aprInst.generateFrequentKItemsets();
+	}
+
+}

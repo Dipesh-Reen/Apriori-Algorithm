@@ -36,7 +36,7 @@ public class Apriori {
 		this.minSup = minSup;
 		System.out.println(this.minSup);
 	}
-q
+
 	public int getMinConf() {
 		return minConf;
 	}
@@ -126,7 +126,12 @@ q
 	public void generateFrequentKItemsets(){
 		this.k++;
 		if(this.k-2 < 1){
+			for ( Entry<Vector<Integer>, Integer> frequentItemset : frequentKItemset.get(1).entrySet()){
+//				for (vector<Integer> itemset1 : frequentItemset.getKey()){
+//					
+//				}
 //			combineItemsets();
+			}
 		}
 	}
 	
